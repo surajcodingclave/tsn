@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, LogOut, Truck, ChevronDown } from "lucide-react";
@@ -16,18 +16,9 @@ export function AppShell({ nav, brand, user, roleLabel, role, children }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  // group -> expanded. Default: every group expanded so all menu items are visible.
-  const [openGroups, setOpenGroups] = useState({});
-  const groupKeys = nav.filter((i) => i.group).map((i) => i.group);
-  const isGroupOpen = (g) => openGroups[g] !== false; // undefined => open
-  const toggleGroup = (g) => setOpenGroups((s) => ({ ...s, [g]: !isGroupOpen(g) }));
-  const allOpen = groupKeys.every((g) => isGroupOpen(g));
-  const toggleAll = () => {
-    const next = !allOpen;
-    const o = {};
-    groupKeys.forEach((g) => { o[g] = next; });
-    setOpenGroups(o);
-  };
+  // Accordion sidebar: only ONE group is open at a time (the one you opened / the active page). 
+  const [openGroup, setOpenGroup] = useState(null);
+  const toggleGroup = (g) => setOpenGroup((prev) => (prev === g ? null : g));
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -37,6 +28,12 @@ export function AppShell({ nav, brand, user, roleLabel, role, children }) {
 
   const isActive = (href) => linkActive(href, pathname);
 
+  // Open the group containing the current page (e.g. navigate to a shipment = Shipment & Booking submenu opens).
+  useEffect(() => {
+    const active = nav.find((i) => i.group && i.children.some((c) => linkActive(c.href, pathname)));
+    if (active) setOpenGroup((prev) => prev || active.group);
+  }, [pathname, nav]);
+
   // NavBody is defined as a renderable element so it can be reused in both desktop & mobile.
   const NavBody = nav.map((item) =>
     item.group ? (
@@ -45,7 +42,7 @@ export function AppShell({ nav, brand, user, roleLabel, role, children }) {
         item={item}
         setOpen={setOpen}
         isActive={isActive}
-        open={isGroupOpen(item.group)}
+        open={openGroup === item.group}
         onToggle={() => toggleGroup(item.group)}
       />
     ) : (
@@ -83,14 +80,6 @@ export function AppShell({ nav, brand, user, roleLabel, role, children }) {
         </div>
       </div>
 
-      {groupKeys.length > 0 && (
-        <div className="flex items-center justify-between px-5 py-2">
-          <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Menu</span>
-          <button onClick={toggleAll} className="text-[11px] font-medium text-primary hover:underline">
-            {allOpen ? "Collapse all" : "Expand all"}
-          </button>
-        </div>
-      )}
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">{NavBody}</nav>
 
       <div className="border-t border-border p-3">
