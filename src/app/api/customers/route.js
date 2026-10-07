@@ -12,7 +12,7 @@ const searchFields = [
 
 /** Public (admin) + searchable fields returned to the client. Password hashes are stripped. */
 const publicFields = [
-  "companyName", "name", "contactPerson", "email", "phone", "customerType", "gstin",
+  "customerUserId", "companyName", "name", "contactPerson", "email", "phone", "customerType", "gstin",
   "status", "street", "city", "state", "pincode", "country", "billingAddress",
   "shippingAddress", "notes", "createdAt", "updatedAt",
 ];
