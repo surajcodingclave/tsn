@@ -51,10 +51,10 @@ export function AppShell({ nav, brand, user, roleLabel, role, children }) {
         href={item.href}
         onClick={() => setOpen(false)}
         className={cn(
-          "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+          "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-150",
           isActive(item.href)
-            ? "bg-primary text-primary-foreground"
-            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            ? "bg-gradient-to-r from-primary to-primary/85 text-primary-foreground shadow-sm"
+            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
         )}
       >
         <item.icon className="h-4 w-4" />
@@ -143,34 +143,45 @@ function NavGroup({ item, setOpen, isActive, open, onToggle }) {
       <button
         onClick={onToggle}
         className={cn(
-          "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground",
-          item.children.some((c) => isActive(c.href)) ? "text-foreground" : "text-muted-foreground"
+          "flex w-full items-center justify-between gap-2 rounded-md px-3 py-2 text-sm font-medium transition-all duration-150",
+          open || item.children.some((c) => isActive(c.href))
+            ? "bg-muted/70 text-foreground"
+            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
         )}
       >
         <span className="flex items-center gap-3">
-          {groupIcon && <groupIcon className="h-4 w-4" />}
-          {item.group}
+          {groupIcon && <groupIcon className={cn("h-4 w-4 shrink-0", item.children.some((c) => isActive(c.href)) || open ? "text-primary" : "text-muted-foreground")} />}
+          <span className="truncate">{item.group}</span>
         </span>
-        <ChevronDown className={cn("h-4 w-4 transition-transform", open ? "" : "-rotate-90")} />
+        <ChevronDown className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-150", open ? "rotate-0" : "-rotate-90")} />
       </button>
       {open && (
-        <div className="mt-1 space-y-1 border-l border-border pl-3 ml-4">
-          {item.children.map((child) => (
-            <Link
-              key={child.href}
-              href={child.href}
-              onClick={() => setOpen(false)}
-              className={cn(
-                "flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-colors",
-                isActive(child.href)
-                  ? "font-medium text-primary"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
-            >
-              {child.icon ? <child.icon className="h-3.5 w-3.5" /> : <span className="h-1.5 w-1.5 rounded-full bg-border" />}
-              {child.label}
-            </Link>
-          ))}
+        <div className="mt-1 space-y-1 border-l-2 border-primary/20 pl-3 ml-4">
+          {item.children.map((child) => {
+            const active = isActive(child.href);
+            return (
+              <Link
+                key={child.href}
+                href={child.href}
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "group flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-all duration-150",
+                  active
+                    ? "bg-primary/10 font-semibold text-primary"
+                    : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                )}
+              >
+                {active ? (
+                  <span className="h-3.5 w-1 rounded-full bg-primary" />
+                ) : child.icon ? (
+                  <child.icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground" />
+                ) : (
+                  <span className="h-1.5 w-1.5 rounded-full bg-border" />
+                )}
+                <span className="truncate">{child.label}</span>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>
