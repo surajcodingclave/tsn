@@ -50,7 +50,7 @@ function CustomerForm({ customer, onSubmit, submitLabel }) {
   };
 
   return (
-    <form className="grid grid-cols-1 gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
+    <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit}>
       <div>
         <Label>Customer Name</Label>
         <Input name="name" value={form.name || ""} onChange={handleChange} placeholder="e.g. Ramesh Kumar" />
@@ -88,7 +88,7 @@ function CustomerForm({ customer, onSubmit, submitLabel }) {
         <Label>Password / Login credentials</Label>
         <Input value="Auto-generated on save" disabled className="text-muted-foreground" />
       </div>
-      <div className="sm:col-span-2">
+      <div>
         <Label>Street / Office Address</Label>
         <Textarea name="street" value={form.street || ""} onChange={handleChange} placeholder="Street / office address" />
       </div>
@@ -108,19 +108,19 @@ function CustomerForm({ customer, onSubmit, submitLabel }) {
         <Label>Country</Label>
         <Input name="country" value={form.country || ""} onChange={handleChange} placeholder="India" />
       </div>
-      <div className="sm:col-span-2">
+      <div>
         <Label>Billing Address</Label>
         <Textarea name="billingAddress" value={form.billingAddress || ""} onChange={handleChange} placeholder="Billing address" />
       </div>
-      <div className="sm:col-span-2">
+      <div>
         <Label>Shipping Address</Label>
         <Textarea name="shippingAddress" value={form.shippingAddress || ""} onChange={handleChange} placeholder="Shipping address" />
       </div>
-      <div className="sm:col-span-2">
+      <div>
         <Label>Notes</Label>
         <Textarea name="notes" value={form.notes || ""} onChange={handleChange} placeholder="Any other relevant details" />
       </div>
-      <div className="sm:col-span-2 flex justify-end gap-2 pt-2">
+      <div className="flex justify-end pt-2">
         <Button type="submit" variant="primary" disabled={!(form.companyName || "").trim()} icon={<Save className="h-4 w-4" />}>
           {submitLabel}
         </Button>

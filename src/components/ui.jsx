@@ -145,12 +145,12 @@ export function FullLoader({ label = "Loading…" }) {
 export function Modal({ open, onClose, title, children, footer }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-3 sm:items-center sm:p-4">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-xl bg-card p-5 shadow-2xl border border-border">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+      <div className="relative my-3 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-border bg-card p-4 shadow-2xl sm:my-0 sm:p-6">
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <h3 className="text-base font-semibold sm:text-lg">{title}</h3>
+          <button onClick={onClose} className="shrink-0 text-muted-foreground hover:text-foreground">
             <X className="h-5 w-5" />
           </button>
         </div>
